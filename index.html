@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RoomCraft Planner</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark">RC</div>
+          <div>
+            <h1>RoomCraft Planner</h1>
+            <span>Precise room planning for homes, studios, and moves</span>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <select id="projectSelect" aria-label="Saved layouts"></select>
+          <button id="newProjectBtn" class="icon-button" title="New layout">+</button>
+          <button id="duplicateProjectBtn" class="icon-button" title="Duplicate layout">⧉</button>
+          <button id="exportPngBtn" class="icon-button" title="Export image">⇩</button>
+          <button id="exportPdfBtn" class="icon-button" title="Export PDF">⎙</button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <aside class="panel left-panel">
+          <section class="panel-section">
+            <div class="section-heading">
+              <h2>Room</h2>
+              <span id="saveStatus">Saved</span>
+            </div>
+            <label>
+              Layout name
+              <input id="projectNameInput" type="text" />
+            </label>
+            <div class="input-grid">
+              <label>
+                Length
+                <input id="roomLengthInput" type="number" min="1" step="0.1" />
+              </label>
+              <label>
+                Width
+                <input id="roomWidthInput" type="number" min="1" step="0.1" />
+              </label>
+              <label>
+                Height
+                <input id="roomHeightInput" type="number" min="1" step="0.1" />
+              </label>
+              <label>
+                Units
+                <select id="unitSelect">
+                  <option value="ft">feet</option>
+                  <option value="m">meters</option>
+                </select>
+              </label>
+            </div>
+            <div class="template-row" id="roomTemplates"></div>
+          </section>
+
+          <section class="panel-section">
+            <h2>Add Custom Furniture</h2>
+            <label>
+              Name
+              <input id="customNameInput" type="text" placeholder="Console Table" />
+            </label>
+            <div class="input-grid">
+              <label>
+                Length
+                <input id="customLengthInput" type="number" min="0.2" step="0.1" value="6" />
+              </label>
+              <label>
+                Width
+                <input id="customWidthInput" type="number" min="0.2" step="0.1" value="3" />
+              </label>
+              <label>
+                Height
+                <input id="customHeightInput" type="number" min="0.1" step="0.1" value="2.5" />
+              </label>
+              <label>
+                Color
+                <input id="customColorInput" type="color" value="#3b82f6" />
+              </label>
+            </div>
+            <button id="addCustomBtn" class="primary-button">Add piece</button>
+          </section>
+
+          <section class="panel-section selected-section">
+            <div class="section-heading">
+              <h2>Selected</h2>
+              <span id="selectedBadge">None</span>
+            </div>
+            <div id="selectedEmpty" class="empty-state">Select a furniture item to edit labels, dimensions, rotation, and placement.</div>
+            <div id="selectedEditor" class="selected-editor hidden">
+              <label>
+                Label
+                <input id="selectedNameInput" type="text" />
+              </label>
+              <div class="input-grid">
+                <label>
+                  Length
+                  <input id="selectedLengthInput" type="number" min="0.2" step="0.1" />
+                </label>
+                <label>
+                  Width
+                  <input id="selectedWidthInput" type="number" min="0.2" step="0.1" />
+                </label>
+                <label>
+                  Height
+                  <input id="selectedHeightInput" type="number" min="0.1" step="0.1" />
+                </label>
+                <label>
+                  Color
+                  <input id="selectedColorInput" type="color" />
+                </label>
+              </div>
+              <div class="input-grid">
+                <label>
+                  X from left
+                  <input id="selectedXInput" type="number" min="0" step="0.1" />
+                </label>
+                <label>
+                  Y from top
+                  <input id="selectedYInput" type="number" min="0" step="0.1" />
+                </label>
+              </div>
+              <div class="button-row">
+                <button id="rotateLeftBtn" class="icon-button" title="Rotate left">↺</button>
+                <button id="rotateRightBtn" class="icon-button" title="Rotate right">↻</button>
+                <button id="duplicateItemBtn" class="icon-button" title="Duplicate item">⧉</button>
+                <button id="deleteItemBtn" class="icon-button danger" title="Delete item">×</button>
+              </div>
+              <div id="wallDistances" class="metric-list"></div>
+            </div>
+          </section>
+        </aside>
+
+        <section class="stage-column">
+          <div class="stage-toolbar">
+            <div class="segmented">
+              <button id="view2dBtn" class="active">2D</button>
+              <button id="view3dBtn">3D</button>
+            </div>
+            <div class="stage-actions">
+              <button id="measureBtn" class="secondary-button">Measure</button>
+              <button id="suggestBtn" class="secondary-button">Suggest layout</button>
+            </div>
+          </div>
+          <div id="plannerStage" class="planner-stage">
+            <div id="floorPlan" class="floor-plan" aria-label="2D room floor plan"></div>
+            <div id="view3d" class="view-3d hidden" aria-label="3D room visualization"></div>
+          </div>
+        </section>
+
+        <aside class="panel right-panel">
+          <section class="panel-section">
+            <h2>Furniture Library</h2>
+            <div id="furnitureLibrary" class="library-list"></div>
+          </section>
+
+          <section class="panel-section">
+            <h2>Space</h2>
+            <div class="space-meter">
+              <div id="spaceMeterFill"></div>
+            </div>
+            <div id="spaceMetrics" class="metric-list"></div>
+          </section>
+
+          <section class="panel-section">
+            <h2>Checks</h2>
+            <div id="recommendations" class="recommendations"></div>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
